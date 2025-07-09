@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地瓜机器人 - RDK-X5视觉监控系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">🤖</div>
+            <h1>地瓜机器人 RDK-X5 视觉监控系统</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-video"></i> 实时监控</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> 数据分析</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> 系统设置</a></li>
+                <li><a href="#"><i class="fas fa-info-circle"></i> 关于</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="model-info">
+            <h3><i class="fas fa-brain"></i> YOLOv8 模型状态: <span class="status-active">运行中</span></h3>
+            <p>当前使用 YOLOv8n (nano) 模型进行实时人员检测，推理速度: 32ms/帧，准确率: 89.2%</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-video"></i> 实时视频监控
+                </div>
+                <div class="card-body">
+                    <div class="video-container">
+                        <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="实时视频流">
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-label"><i class="fas fa-users"></i> 当前人数</div>
+                            <div class="stat-value" id="currentCount">0</div>
+                            <div class="stat-label">检测中</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label"><i class="fas fa-chart-line"></i> 今日峰值</div>
+                            <div class="stat-value" id="peakCount">0</div>
+                            <div class="stat-label">人员</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label"><i class="fas fa-tachometer-alt"></i> 检测速度</div>
+                            <div class="stat-value" id="fps">0</div>
+                            <div class="stat-label">FPS</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label"><i class="fas fa-clock"></i> 运行时间</div>
+                            <div class="stat-value" id="uptime">0:00</div>
+                            <div class="stat-label">分钟:秒</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> 人数变化趋势
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="peopleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="startBtn">
+                <i class="fas fa-play"></i> 开始检测
+            </button>
+            <button class="btn btn-secondary" id="snapshotBtn">
+                <i class="fas fa-camera"></i> 保存快照
+            </button>
+            <button class="btn btn-warning" id="resetBtn">
+                <i class="fas fa-redo"></i> 重置统计
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>地瓜机器人 RDK-X5 开发板 | YOLOv8 视觉系统 | © 2023 地瓜科技</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+
+</html>

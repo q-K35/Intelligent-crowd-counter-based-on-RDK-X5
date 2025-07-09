@@ -1,0 +1,74 @@
+<!-- 在原有HTML基础上，更新高级数据分析部分 -->
+<div class="card" id="analytics">
+    <div class="card-header">
+        <i class="fas fa-chart-pie"></i> 高级数据分析
+    </div>
+    <div class="card-body">
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <i class="fas fa-chart-bar"></i> 人员流量统计
+                </div>
+                <div class="analytics-content">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">总检测人数</div>
+                            <div class="stat-value" id="totalCount">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">平均密度</div>
+                            <div class="stat-value" id="density">0</div>
+                            <div class="stat-note">人/帧</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-label">今日峰值</div>
+                            <div class="stat-value" id="peakCount">0</div>
+                            <div class="stat-note" id="peakTime">--:--:--</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">当前趋势</div>
+                            <div class="stat-value trend-indicator" id="trend">稳定</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <i class="fas fa-history"></i> 近期数据分布
+                </div>
+                <div class="analytics-content">
+                    <div class="distribution-chart">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <i class="fas fa-clock"></i> 时段分析
+                </div>
+                <div class="analytics-content">
+                    <div class="time-chart">
+                        <canvas id="hourlyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <i class="fas fa-calendar-alt"></i> 每日趋势
+                </div>
+                <div class="analytics-content">
+                    <div class="time-chart">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

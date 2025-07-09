@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>人群分析系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        .stat-card {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .trend-up {
+            color: green;
+        }
+        .trend-down {
+            color: red;
+        }
+        .chart-container {
+            grid-column: span 2;
+            height: 300px;
+        }
+        .video-container {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="video-container">
+            <img src="{{ url_for('video_feed') }}" width="640" height="480">
+        </div>
+        
+        <div class="stat-card">
+            <h3>实时人数</h3>
+            <p id="current-count">0</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>峰值人数</h3>
+            <p id="peak-count">0</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>平均人数</h3>
+            <p id="avg-count">0</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3>趋势</h3>
+            <p id="trend">稳定</p>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="peopleChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="hourlyChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="dailyChart"></canvas>
+        </div>
+        
+        <button onclick="resetData()">重置统计数据</button>
+    </div>
+
+    <script>
+        // 初始化图表
+        const ctx = document.getElementById('peopleChart').getContext('2d');
+        const peopleChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '实时人数',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // 小时图表
+        const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+        const hourlyChart = new Chart(hourlyCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '每小时人数',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                }]
+            }
+        });
+        
+        // 日图表
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        const dailyChart = new Chart(dailyCtx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '每日人数',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)'
+                }]
+            }
+        });
+
+        // 更新实时数据
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('current-count').textContent = data.current;
+                    document.getElementById('peak-count').textContent = data.peak;
+                    document.getElementById('avg-count').textContent = data.average;
+                    
+                    const trendElem = document.getElementById('trend');
+                    trendElem.textContent = data.trend;
+                    trendElem.className = data.trend === 'increasing' ? 'trend-up' : 
+                                         data.trend === 'decreasing' ? 'trend-down' : '';
+                    
+                    // 更新图表
+                    peopleChart.data.labels = data.chart_data.labels;
+                    peopleChart.data.datasets[0].data = data.chart_data.values;
+                    peopleChart.update();
+                });
+            
+            fetch('/hourly_data')
+                .then(response => response.json())
+                .then(data => {
+                    hourlyChart.data.labels = data.map(item => item.hour);
+                    hourlyChart.data.datasets[0].data = data.map(item => item.count);
+                    hourlyChart.update();
+                });
+            
+            fetch('/daily_data')
+                .then(response => response.json())
+                .then(data => {
+                    dailyChart.data.labels = data.map(item => item.day);
+                    dailyChart.data.datasets[0].data = data.map(item => item.count);
+                    dailyChart.update();
+                });
+        }
+        
+        function resetData() {
+            fetch('/reset', { method: 'POST' })
+                .then(() => {
+                    alert('统计数据已重置');
+                    location.reload();
+                });
+        }
+        
+        // 每2秒更新一次数据
+        setInterval(updateData, 2000);
+        updateData(); // 初始加载
+    </script>
+</body>
+</html>
